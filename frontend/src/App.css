@@ -1,12 +1,13 @@
-/* Mustafa Doruk Yılmaz — 2416501038 */
-
 :root {
   --no: 2416501038;
   --ton: mod(var(--no), 30);
   --renk-ana: hsl(var(--ton) 85% 18%);
   --renk-zemin: white;
+  --renk-hata: #c62828;
   --font: system-ui;
-  --bosluk-m: 1rem;  --kose: 8px;
+  --bosluk-s: 0.5rem;
+  --bosluk-m: 1rem;
+  --kose: 8px;
 }
 body { font-family: var(--font); margin: 0; background: var(--renk-zemin); }
 
@@ -16,11 +17,11 @@ header, nav {
   padding: 0 var(--bosluk-m);
 }
 
-header { padding-top: var(--bosluk-m); }
+header { padding-top: var(--bosluk-m); padding-bottom: 1px; }
 nav { padding-bottom: var(--bosluk-m); }
 nav a { color: white; margin-right: var(--bosluk-m); }
 
-main { padding: var(--bosluk-m); }
+main { padding: var(--bosluk-m); max-width: 1100px; margin: 0 auto; }
 
 img { max-width: 100%; height: auto; }
 
@@ -43,8 +44,7 @@ a { color: var(--renk-ana); font-weight: bold; }
   .detay { grid-template-columns: 1fr 1fr; }
 }
 
-/* Form */
-label { display: block; }
+label { display: block; font-weight: bold; }
 
 input, select, textarea, button {
   font: inherit;
@@ -58,10 +58,12 @@ button {
   background: var(--renk-ana);
   color: white;
   border: none;
+  cursor: pointer;
 }
 
-/* Sprint 3 */
-header { padding-bottom: 1px; } /* h1/p margin'i header dışına taşmasın */
+.form { max-width: 600px; }
+.form button { width: auto; padding: 0.5rem 1.5rem; }
+
 footer { text-align: center; padding: var(--bosluk-m); color: gray; }
 
 .buton {
@@ -72,6 +74,8 @@ footer { text-align: center; padding: var(--bosluk-m); color: gray; }
   border-radius: var(--kose);
   text-decoration: none;
   margin: 0.25rem 0;
+  width: auto;
+  font-weight: bold;
 }
 
 .filtre {
@@ -88,7 +92,7 @@ footer { text-align: center; padding: var(--bosluk-m); color: gray; }
 
 #sonuc { color: green; font-weight: bold; }
 
-.hata-metni { color: red; font-size: 0.85rem; }
+.hata-metni { display: block; color: var(--renk-hata); font-size: 0.85rem; margin-top: 0.25rem; }
 
 [aria-invalid="true"] {
   border: 2px solid red;
@@ -103,20 +107,49 @@ footer { text-align: center; padding: var(--bosluk-m); color: gray; }
   padding: var(--bosluk-m);
 }
 
-.basari { 
-  color: rgb(68, 251, 12);
-  border: 1px solid green;
+.mesaj {
   border-radius: var(--kose);
   padding: var(--bosluk-m);
+  max-width: 600px;
+  box-sizing: border-box;
 }
 
-.basari pre { color: black; white-space: pre-wrap; }
+.mesaj-basari {
+  color: #1b5e20;
+  background: #eef8ee;
+  border: 1px solid green;
+}
 
-/* Sprint 4 */
+.form-linkler { display: flex; flex-wrap: wrap; gap: var(--bosluk-m); }
+
 nav a[aria-current="page"] {
   background: white;
   color: var(--renk-ana);
   padding: 0.25rem 0.5rem;
   border-radius: var(--kose);
   text-decoration: none;
+}
+
+.tablo { width: 100%; border-collapse: collapse; }
+.tablo th, .tablo td { padding: var(--bosluk-s); text-align: left; border-bottom: 1px solid #ddd; }
+.tablo th { background: var(--renk-ana); color: #fff; }
+.islemler { display: flex; gap: var(--bosluk-s); }
+.islemler .buton { margin: 0; }
+.buton-sil { background: var(--renk-hata); border: none; }
+
+@media (max-width: 699px) {
+  .tablo thead { display: none; }
+  .tablo tr {
+    display: block;
+    border: 1px solid #ddd;
+    border-radius: var(--kose);
+    padding: var(--bosluk-s);
+    margin-bottom: var(--bosluk-m);
+  }
+  .tablo td { display: block; border: none; padding: 0.25rem 0; }
+  .tablo td.islemler { display: flex; margin-top: var(--bosluk-s); }
+  .tablo td[data-baslik]::before {
+    content: attr(data-baslik) ": ";
+    font-weight: 700;
+  }
 }

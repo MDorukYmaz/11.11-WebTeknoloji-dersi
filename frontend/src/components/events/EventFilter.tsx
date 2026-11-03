@@ -1,16 +1,14 @@
 import type { Category } from "../../types/campus-event";
-import { events } from "../../data/events";
-
-const categories = [...new Set(events.map((e) => e.category))];
 
 interface EventFilterProps {
   searchText: string;
   category: Category | "";
+  categories: Category[];
   onSearchChange: (text: string) => void;
   onCategoryChange: (category: Category | "") => void;
 }
 
-function EventFilter({ searchText, category, onSearchChange, onCategoryChange }: EventFilterProps) {
+function EventFilter({ searchText, category, categories, onSearchChange, onCategoryChange }: EventFilterProps) {
   return (
     <form className="filtre" onSubmit={(e) => e.preventDefault()}>
       <div>
