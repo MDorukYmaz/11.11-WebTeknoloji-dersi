@@ -1,7 +1,7 @@
 
 Mustafa Doruk Yılmaz · 2416501038
 
-Canlı Adres: https://mustafadorukyilmaz-frontend.vercel.app
+Canlı Adres: https://21-ekim.vercel.app
 
 Kurulum
 
