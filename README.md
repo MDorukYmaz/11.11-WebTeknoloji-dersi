@@ -1,37 +1,25 @@
-# Kampüs Etkinlikleri — Frontend
 
 Mustafa Doruk Yılmaz · 2416501038
 
-## Canlı Adres
+Canlı Adres: https://mustafadorukyilmaz-frontend.vercel.app
 
-https://mustafadorukyilmaz-frontend.vercel.app
+Kurulum
 
-## Kurulum
-
-```bash
 cd frontend
 npm install
 npm run dev
-```
 
-## Route Listesi
+Route Listesi
 
-| Adres | Sayfa |
-| --- | --- |
-| `/` | HomePage |
-| `/events` | EventsPage |
-| `/events/:id` | EventDetailPage |
-| `/login` | LoginPage |
-| `/register` | RegisterPage |
-| `/forgot-password` | ForgotPasswordPage |
-| `/admin` | AdminPage |
-| `/admin/new` | AddEventPage |
-| `/admin/:id/edit` | EditEventPage |
-| `*` | NotFoundPage |
+//HomePage
+/events/EventsPage
+/events/:id/EventDetailPage
+/login/LoginPage
+/register/RegisterPage
+/forgot-password/ForgotPasswordPage
+/admin/AdminPage
+/admin/new/AddEventPage
+/admin/:id/edit/EditEventPage
+*/NotFoundPage
 
-## Kullanılanlar
 
-- React + TypeScript + Vite
-- React Router (`BrowserRouter`, `Routes`, `NavLink`, `Link`, `useParams`, `useNavigate`)
-- Context API (`EventsContext`, `useEvents`)
-- Controlled form ve doğrulama (`validate-event`)
