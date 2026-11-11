@@ -1,0 +1,141 @@
+{
+  "info": {
+    "name": "Kampüs API",
+    "description": "Sprint 7 — Express REST API (2416501038)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health check (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Etkinlik listesi (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Tek etkinlik (200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/events/event-1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events",
+            "event-1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Olmayan etkinlik (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/events/event-999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events",
+            "event-999"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Yeni etkinlik (201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Web Teknolojileri Semineri\",\n  \"category\": \"Seminer\",\n  \"date\": \"2026-12-05\",\n  \"time\": \"14:00\",\n  \"location\": \"Mühendislik Fakültesi Amfi 3\",\n  \"description\": \"Express ile REST API geliştirmeye giriş.\",\n  \"capacity\": 40\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "6. Eksik veri (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Eksik etkinlik\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
