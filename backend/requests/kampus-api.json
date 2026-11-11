@@ -1,84 +1,90 @@
 {
   "info": {
+    "_postman_id": "7c2f5e1a-4b8d-4e3a-9f61-2416501038a7",
     "name": "Kampüs API",
-    "description": "Sprint 7 — Express REST API (2416501038)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000"
-    }
-  ],
   "item": [
     {
-      "name": "1. Health check (200)",
+      "name": "1 Health",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/health",
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
           "host": [
-            "{{baseUrl}}"
+            "localhost"
           ],
+          "port": "3000",
           "path": [
             "health"
           ]
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "2. Etkinlik listesi (200)",
+      "name": "2 Etkinlik listesi",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/events",
+          "raw": "http://localhost:3000/events",
+          "protocol": "http",
           "host": [
-            "{{baseUrl}}"
+            "localhost"
           ],
+          "port": "3000",
           "path": [
             "events"
           ]
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "3. Tek etkinlik (200)",
+      "name": "3 Tek etkinlik",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/events/event-1",
+          "raw": "http://localhost:3000/events/event-2",
+          "protocol": "http",
           "host": [
-            "{{baseUrl}}"
+            "localhost"
           ],
+          "port": "3000",
           "path": [
             "events",
-            "event-1"
+            "event-2"
           ]
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "4. Olmayan etkinlik (404)",
+      "name": "4 Olmayan etkinlik (404)",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/events/event-999",
+          "raw": "http://localhost:3000/events/yok",
+          "protocol": "http",
           "host": [
-            "{{baseUrl}}"
+            "localhost"
           ],
+          "port": "3000",
           "path": [
             "events",
-            "event-999"
+            "yok"
           ]
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "5. Yeni etkinlik (201)",
+      "name": "5 Etkinlik oluştur (201)",
       "request": {
         "method": "POST",
         "header": [
@@ -88,27 +94,30 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/events",
+          "raw": "http://localhost:3000/events",
+          "protocol": "http",
           "host": [
-            "{{baseUrl}}"
+            "localhost"
           ],
+          "port": "3000",
           "path": [
             "events"
           ]
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Web Teknolojileri Semineri\",\n  \"category\": \"Seminer\",\n  \"date\": \"2026-12-05\",\n  \"time\": \"14:00\",\n  \"location\": \"Mühendislik Fakültesi Amfi 3\",\n  \"description\": \"Express ile REST API geliştirmeye giriş.\",\n  \"capacity\": 40\n}",
+          "raw": "{\n  \"title\": \"Web Teknolojileri Semineri\",\n  \"category\": \"Seminer\",\n  \"capacity\": 40,\n  \"date\": \"2026-12-05\",\n  \"time\": \"14:00\",\n  \"location\": \"Mühendislik Fakültesi Amfi 3\",\n  \"description\": \"Express ile REST API geliştirmeye giriş.\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         }
-      }
+      },
+      "response": []
     },
     {
-      "name": "6. Eksik veri (400)",
+      "name": "6 Eksik veri (400)",
       "request": {
         "method": "POST",
         "header": [
@@ -118,24 +127,27 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/events",
+          "raw": "http://localhost:3000/events",
+          "protocol": "http",
           "host": [
-            "{{baseUrl}}"
+            "localhost"
           ],
+          "port": "3000",
           "path": [
             "events"
           ]
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Eksik etkinlik\"\n}",
+          "raw": "{\n  \"title\": \"Sadece başlık\"\n}",
           "options": {
             "raw": {
               "language": "json"
             }
           }
         }
-      }
+      },
+      "response": []
     }
   ]
 }

@@ -30,7 +30,7 @@ API: `http://localhost:3000` (port `.env` içindeki `PORT` değerinden okunur).
 | Method | Endpoint | Amaç | Başarılı | Hata | Durum |
 |---|---|---|---|---|---|
 | GET | `/health` | Sunucu ayakta mı | 200 | — | Bu sprint |
-| GET | `/events` | Listeyi getir | 200 | — | Bu sprint |
+| GET | `/events` | Listeyi getir (`?category=Atölye` isteğe bağlı) | 200 | — | Bu sprint |
 | GET | `/events/:id` | Tek etkinlik | 200 | 404 | Bu sprint |
 | POST | `/events` | Yeni etkinlik | 201 | 400 | Bu sprint |
 | PATCH | `/events/:id` | Güncelle | 200 | 400, 404 | Sprint 9 |
@@ -53,7 +53,7 @@ API: `http://localhost:3000` (port `.env` içindeki `PORT` değerinden okunur).
 
 ### POST /events
 
-Zorunlu alanlar: `title`, `category`, `date`, `time`, `location`, `capacity` (pozitif tam sayı). `description` isteğe bağlıdır, `id` sunucu tarafından üretilir.
+Zorunlu alanlar: `title`, `category`, `date`. Eksikse `400` ve `{ "error": { "message": "title, category and date are required" } }`. `capacity`, `time`, `location`, `description` isteğe bağlıdır; `id` sunucu tarafından üretilir (`event-<zaman damgası>`).
 
 ### Hata biçimi
 
@@ -65,9 +65,18 @@ Tüm hatalar aynı biçimde döner:
 
 | Durum | Ne zaman |
 |---|---|
-| 400 | Eksik/hatalı alan (`fields` dizisi ile) veya bozuk JSON |
+| 400 | Eksik zorunlu alan veya bozuk JSON |
 | 404 | Olmayan etkinlik id'si veya bilinmeyen route |
 
 ## İstek koleksiyonu
 
-`requests/kampus-api.json` — 6 istek (Postman v2.1 formatı; Postman, Thunder Client veya Insomnia'ya import edilebilir). `baseUrl` değişkeni `http://localhost:3000`.
+`requests/kampus-api.json` — Postman "Kampüs API" collection'ı (v2.1). Postman'de **Import** ile açılır.
+
+| # | İstek | Beklenen |
+|---|---|---|
+| 1 | GET /health | 200 · ok + student |
+| 2 | GET /events | 200 · 6 kayıt |
+| 3 | GET /events/event-2 | 200 · event-2 |
+| 4 | GET /events/yok | 404 · error |
+| 5 | POST /events (tam body) | 201 · yeni id |
+| 6 | POST /events (sadece title) | 400 · error |
