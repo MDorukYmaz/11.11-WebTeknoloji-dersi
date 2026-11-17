@@ -1,4 +1,4 @@
-// Bellek içi etkinlik dizisi (Sprint 8'de MongoDB'ye taşınacak)
+// Başlangıç verisi: "npm run seed" bunu MongoDB events koleksiyonuna yükler
 export const events = [
   {
     id: "event-1",

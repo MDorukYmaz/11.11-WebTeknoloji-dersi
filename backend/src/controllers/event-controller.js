@@ -1,25 +1,35 @@
-import { events } from "../data/events.js";
+import { ObjectId } from "mongodb";
+import { eventsCollection } from "../db.js";
+
+// MongoDB belgesi { _id, ... } -> API nesnesi { id, ... }
+function toApi({ _id, ...rest }) {
+  return { id: _id.toString(), ...rest };
+}
 
 // GET /events (?category=Atölye isteğe bağlı) -> 200
-export function getEvents(req, res) {
+export async function getEvents(req, res) {
   const { category } = req.query;
-  const list = category
-    ? events.filter((e) => e.category === category)
-    : events;
-  res.status(200).json(list);
+  const filter = category ? { category } : {};
+  const list = await eventsCollection().find(filter).sort({ date: 1 }).toArray();
+  res.status(200).json(list.map(toApi));
 }
 
 // GET /events/:id -> 200 | 404
-export function getEventById(req, res) {
-  const event = events.find((e) => e.id === req.params.id);
+export async function getEventById(req, res) {
+  const { id } = req.params;
+  // geçersiz ObjectId biçimi de "bulunamadı" sayılır
+  const event = ObjectId.isValid(id)
+    ? await eventsCollection().findOne({ _id: new ObjectId(id) })
+    : null;
+
   if (!event) {
     return res.status(404).json({ error: { message: "Event not found" } });
   }
-  res.status(200).json(event);
+  res.status(200).json(toApi(event));
 }
 
 // POST /events -> 201 | 400
-export function createEvent(req, res) {
+export async function createEvent(req, res) {
   const { title, category, capacity, date, time, location, description } =
     req.body ?? {};
 
@@ -30,7 +40,6 @@ export function createEvent(req, res) {
   }
 
   const newEvent = {
-    id: `event-${Date.now()}`,
     title,
     category,
     capacity: Number(capacity) || 0,
@@ -40,6 +49,6 @@ export function createEvent(req, res) {
     description: description ?? "",
   };
 
-  events.push(newEvent);
-  res.status(201).json(newEvent);
+  const { insertedId } = await eventsCollection().insertOne(newEvent);
+  res.status(201).json(toApi({ _id: insertedId, ...newEvent }));
 }
