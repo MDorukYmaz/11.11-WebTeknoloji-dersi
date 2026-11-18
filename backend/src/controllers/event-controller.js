@@ -1,17 +1,22 @@
 import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 import { eventsCollection } from "../db.js";
+import { Event } from "../models/event-model.js";
 
 // MongoDB belgesi { _id, ... } -> API nesnesi { id, ... }
 function toApi({ _id, ...rest }) {
   return { id: _id.toString(), ...rest };
 }
 
-// GET /events (?category=Atölye isteğe bağlı) -> 200
-export async function getEvents(req, res) {
-  const { category } = req.query;
-  const filter = category ? { category } : {};
-  const list = await eventsCollection().find(filter).sort({ date: 1 }).toArray();
-  res.status(200).json(list.map(toApi));
+// GET /events (?category=Atölye isteğe bağlı) -> 200, tarihe göre sıralı
+export async function getEvents(req, res, next) {
+  try {
+    const filter = req.query.category ? { category: req.query.category } : {};
+    const events = await Event.find(filter).sort({ date: 1 });
+    res.json(events);
+  } catch (err) {
+    next(err); // hata middleware'ine gider, sunucu çökmez
+  }
 }
 
 // GET /events/:id -> 200 | 404
