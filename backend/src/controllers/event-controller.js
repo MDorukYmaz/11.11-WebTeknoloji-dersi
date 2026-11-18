@@ -20,17 +20,20 @@ export async function getEvents(req, res, next) {
 }
 
 // GET /events/:id -> 200 | 404
-export async function getEventById(req, res) {
-  const { id } = req.params;
-  // geçersiz ObjectId biçimi de "bulunamadı" sayılır
-  const event = ObjectId.isValid(id)
-    ? await eventsCollection().findOne({ _id: new ObjectId(id) })
-    : null;
-
-  if (!event) {
-    return res.status(404).json({ error: { message: "Event not found" } });
+export async function getEventById(req, res, next) {
+  try {
+    // "yok" gibi biçimi yanlış id: CastError (500) yerine 404
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ error: { message: "Event not found" } });
+    }
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ error: { message: "Event not found" } });
+    }
+    res.json(event);
+  } catch (err) {
+    next(err);
   }
-  res.status(200).json(toApi(event));
 }
 
 // POST /events -> 201 | 400
