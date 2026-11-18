@@ -50,7 +50,7 @@
             "exec": [
               "// İlk etkinliğin MongoDB id'sini 3. istek için sakla",
               "const list = pm.response.json();",
-              "if (list.length) pm.collectionVariables.set(\"eventId\", list[0].id);"
+              "if (list.length) pm.collectionVariables.set(\"eventId\", list[0]._id);"
             ]
           }
         }
