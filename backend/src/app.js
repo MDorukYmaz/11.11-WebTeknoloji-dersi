@@ -20,11 +20,14 @@ app.use((req, res) => { // eşleşme yoksa
   res.status(404).json({ error: { message: "Route not found" } });
 });
 
-// hatalı JSON gövdesi vb. -> JSON hata yanıtı
+// hata yakalayıcı: 4 parametre olduğu için next(err) buraya gelir
 app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = status === 400 ? "Invalid JSON body" : "Internal server error";
-  res.status(status).json({ error: { message } });
+  // bozuk JSON gövdesi kullanıcı hatasıdır
+  if (err.type === "entity.parse.failed") {
+    return res.status(400).json({ error: { message: "Invalid JSON body" } });
+  }
+  console.error(err.message); // ayrıntı terminalde kalır
+  res.status(500).json({ error: { message: "Server error" } });
 });
 
 export default app;
