@@ -1,7 +1,6 @@
-// Başlangıç verisi: "npm run seed" bunu MongoDB events koleksiyonuna yükler
-export const events = [
+// Başlangıç verisi: "npm run seed" bunu events koleksiyonuna yükler. id alanı yok, _id MongoDB verir.
+export const seedEvents = [
   {
-    id: "event-1",
     title: "Yapay Zekâ ile Veri Analizi Semineri",
     category: "Seminer",
     capacity: 80,
@@ -11,7 +10,6 @@ export const events = [
     description: "Python ve hazır modellerle kampüs verileri üzerinde örnek analizler.",
   },
   {
-    id: "event-2",
     title: "Drone Kodlama Atölyesi",
     category: "Atölye",
     capacity: 20,
@@ -21,7 +19,6 @@ export const events = [
     description: "Mini drone'ları blok kodlama ile uçurma ve basit görev senaryoları.",
   },
   {
-    id: "event-3",
     title: "Siber Güvenlik Workshopu",
     category: "Atölye",
     capacity: 53,
@@ -31,7 +28,6 @@ export const events = [
     description: "Uzmanlar siber güvenlik hakkında temel araçları gösterecek.",
   },
   {
-    id: "event-4",
     title: "Spor Tırmanış Etkinliği",
     category: "Atölye",
     capacity: 32,
@@ -41,7 +37,6 @@ export const events = [
     description: "Spor tırmanışa giriş ve temel teknikler.",
   },
   {
-    id: "event-5",
     title: "Hackaton 2026",
     category: "Yarışma",
     capacity: 50,
@@ -51,7 +46,6 @@ export const events = [
     description: "Uygulama geliştirme ve yarışma.",
   },
   {
-    id: "event-6",
     title: "Okçuluk Etkinliği",
     category: "Atölye",
     capacity: 50,
