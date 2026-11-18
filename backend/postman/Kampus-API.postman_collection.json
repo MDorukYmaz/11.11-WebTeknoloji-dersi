@@ -1,0 +1,418 @@
+{
+  "info": {
+    "_postman_id": "7c2f5e1a-4b8d-4e3a-9f61-2416501038a7",
+    "name": "Kampüs API",
+    "description": "Kampüs etkinlikleri REST API (Express + MongoDB/Mongoose).\n\nMustafa Doruk Yılmaz · 2416501038\n\nÇalıştırmadan önce: `npm run seed` ve `npm run dev` (backend klasöründe). Adres `baseUrl` collection değişkenindedir. İstekler sırayla çalıştırılmalıdır (Run collection): `eventId` ve `createdId` önceki isteklerden otomatik kaydedilir.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "1 Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Sunucu ayakta mı? → 200"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"status ok ve öğrenci no\", () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.eql(\"ok\");",
+                  "  pm.expect(body.student).to.eql(\"2416501038\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "2 Etkinlik listesi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events"
+              ]
+            },
+            "description": "Tüm etkinlikler, tarihe göre sıralı → 200"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "pm.test(\"Dizi döner\", () => pm.expect(list).to.be.an(\"array\"));",
+                  "// İlk etkinliğin MongoDB _id'sini 3. istek için sakla",
+                  "if (list.length) pm.collectionVariables.set(\"eventId\", list[0]._id);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "3 Kategoriye göre filtre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events?category=Atölye",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Atölye"
+                }
+              ]
+            },
+            "description": "?category=Atölye → yalnızca o kategori, 200"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Hepsi Atölye\", () => {",
+                  "  pm.response.json().forEach((e) => pm.expect(e.category).to.eql(\"Atölye\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "4 Tek etkinlik",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events",
+                "{{eventId}}"
+              ]
+            },
+            "description": "eventId, 2. istekte otomatik kaydedilir → 200"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"İstenen _id döner\", () => {",
+                  "  pm.expect(pm.response.json()._id).to.eql(pm.collectionVariables.get(\"eventId\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "5 Olmayan etkinlik (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/yok",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events",
+                "yok"
+              ]
+            },
+            "description": "Biçimi yanlış id → 404"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Hata biçimi { error: { message } }\", () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property(\"error\");",
+                  "  pm.expect(body.error.message).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "6 Etkinlik oluştur (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Web Teknolojileri Semineri\",\n  \"category\": \"Seminer\",\n  \"capacity\": 40,\n  \"date\": \"2026-12-05\",\n  \"time\": \"14:00\",\n  \"location\": \"Mühendislik Fakültesi Amfi 3\",\n  \"description\": \"Express ile REST API geliştirmeye giriş.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Tam body → 201, dönen kayıtta _id ve createdAt olur"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test(\"_id ve createdAt var\", () => {",
+                  "  pm.expect(body).to.have.property(\"_id\");",
+                  "  pm.expect(body).to.have.property(\"createdAt\");",
+                  "});",
+                  "// Kalıcılık testi için oluşturulan kaydın id'sini sakla",
+                  "pm.collectionVariables.set(\"createdId\", body._id);"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "7 Oluşturulanı getir",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{createdId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events",
+                "{{createdId}}"
+              ]
+            },
+            "description": "6. istekte eklenen kayıt veritabanından okunur → 200"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Başlık aynı\", () => pm.expect(pm.response.json().title).to.eql(\"Web Teknolojileri Semineri\"));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "8 Eksik veri (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Sadece başlık\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "category ve date eksik → 400 (Mongoose ValidationError)"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Hata biçimi { error: { message } }\", () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property(\"error\");",
+                  "  pm.expect(body.error.message).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "9 Bozuk JSON (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"title\": \"Bozuk\", }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Geçersiz JSON gövdesi → 400 Invalid JSON body"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Hata biçimi { error: { message } }\", () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property(\"error\");",
+                  "  pm.expect(body.error.message).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10 Bilinmeyen route (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/olmayan-adres",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "olmayan-adres"
+          ]
+        },
+        "description": "Tanımsız adres → 404 Route not found"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status 404\", () => pm.response.to.have.status(404));",
+              "pm.test(\"Hata biçimi { error: { message } }\", () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property(\"error\");",
+              "  pm.expect(body.error.message).to.be.a(\"string\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "eventId",
+      "value": ""
+    },
+    {
+      "key": "createdId",
+      "value": ""
+    }
+  ]
+}

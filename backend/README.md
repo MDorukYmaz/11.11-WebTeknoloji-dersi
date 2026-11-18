@@ -108,18 +108,33 @@ Tüm hatalar aynı biçimde döner: `{ "error": { "message": "..." } }`
 | 404 | Olmayan / geçersiz etkinlik id'si (`Event not found`) veya bilinmeyen route (`Route not found`) |
 | 500 | Beklenmeyen hata (`Server error`); ayrıntı yalnızca terminale yazılır, sunucu çalışmaya devam eder |
 
-## İstek koleksiyonu
+## Postman collection
 
-`requests/kampus-api.json` — Postman "Kampüs API" collection'ı (v2.1). Postman'de **Import** ile açılır.
+`postman/Kampus-API.postman_collection.json`: "Kampüs API" adlı Postman collection'ı (v2.1).
 
-| # | İstek | Beklenen |
-|---|---|---|
-| 1 | GET /health | 200 · ok + student |
-| 2 | GET /events | 200 · 6 kayıt (seed sonrası) |
-| 3 | GET /events/{{eventId}} | 200 · tek kayıt (`eventId`, 2. istekte listedeki ilk `_id`'den otomatik kaydedilir) |
-| 4 | GET /events/yok | 404 · error |
-| 5 | POST /events (tam body) | 201 · `_id` + `createdAt` |
-| 6 | POST /events (sadece title) | 400 · error |
+**İçe aktarma:** Postman → **Import** → dosyayı sürükle → sol menüde **Collections** altında "Kampüs API" görünür.
+**Toplu çalıştırma:** collection'a sağ tık → **Run collection** → **Run Kampüs API**. Her isteğin testleri (durum kodu, gövde) yeşil/kırmızı listelenir.
+
+Collection değişkenleri (collection'a tıkla → **Variables**):
+
+| Değişken | Değer |
+|---|---|
+| `baseUrl` | `http://localhost:3000` |
+| `eventId` | 2. istekte listedeki ilk `_id`'den otomatik kaydedilir |
+| `createdId` | 6. istekte oluşturulan kaydın `_id`'si otomatik kaydedilir |
+
+| Klasör | # | İstek | Beklenen |
+|---|---|---|---|
+| Health | 1 | GET /health | 200 · ok + student |
+| Events | 2 | GET /events | 200 · dizi (seed sonrası 6 kayıt) |
+| Events | 3 | GET /events?category=Atölye | 200 · yalnızca Atölye |
+| Events | 4 | GET /events/{{eventId}} | 200 · tek kayıt |
+| Events | 5 | GET /events/yok | 404 · error |
+| Events | 6 | POST /events (tam body) | 201 · `_id` + `createdAt` |
+| Events | 7 | GET /events/{{createdId}} | 200 · az önce eklenen kayıt |
+| Events | 8 | POST /events (sadece title) | 400 · error |
+| Events | 9 | POST /events (bozuk JSON) | 400 · Invalid JSON body |
+| — | 10 | GET /olmayan-adres | 404 · Route not found |
 
 ## Kalıcılık testi
 
