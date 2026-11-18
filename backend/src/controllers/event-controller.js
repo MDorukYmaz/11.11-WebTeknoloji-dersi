@@ -1,12 +1,5 @@
-import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
-import { eventsCollection } from "../db.js";
 import { Event } from "../models/event-model.js";
-
-// MongoDB belgesi { _id, ... } -> API nesnesi { id, ... }
-function toApi({ _id, ...rest }) {
-  return { id: _id.toString(), ...rest };
-}
 
 // GET /events (?category=Atölye isteğe bağlı) -> 200, tarihe göre sıralı
 export async function getEvents(req, res, next) {
@@ -36,27 +29,15 @@ export async function getEventById(req, res, next) {
   }
 }
 
-// POST /events -> 201 | 400
-export async function createEvent(req, res) {
-  const { title, category, capacity, date, time, location, description } =
-    req.body ?? {};
-
-  if (!title || !category || !date) {
-    return res
-      .status(400)
-      .json({ error: { message: "title, category and date are required" } });
+// POST /events -> 201 | 400 (doğrulamayı schema yapar)
+export async function createEvent(req, res, next) {
+  try {
+    const event = await Event.create(req.body ?? {});
+    res.status(201).json(event);
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      return res.status(400).json({ error: { message: err.message } });
+    }
+    next(err);
   }
-
-  const newEvent = {
-    title,
-    category,
-    capacity: Number(capacity) || 0,
-    date,
-    time: time ?? "",
-    location: location ?? "",
-    description: description ?? "",
-  };
-
-  const { insertedId } = await eventsCollection().insertOne(newEvent);
-  res.status(201).json(toApi({ _id: insertedId, ...newEvent }));
 }
