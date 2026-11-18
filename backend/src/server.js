@@ -1,13 +1,14 @@
 import "dotenv/config";
 import app from "./app.js";
-import { connectDb } from "./db.js";
+import { connectDatabase } from "./config/database.js";
 
 const PORT = process.env.PORT || 3000;
 
+// Önce veritabanı, sonra sunucu
 try {
-  await connectDb();
+  await connectDatabase();
   app.listen(PORT, () => console.log(`API: http://localhost:${PORT}`));
 } catch (err) {
-  console.error("MongoDB bağlantısı kurulamadı:", err.message);
+  console.error(`Bağlanılamadı: ${err.message}`);
   process.exit(1);
 }
